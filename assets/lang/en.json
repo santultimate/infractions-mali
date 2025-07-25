@@ -1,0 +1,18 @@
+{
+  "app_title": "Mali Road Infractions",
+  "login": "Login",
+  "logout": "Logout",
+  "map": "Map",
+  "interactive_map": "Interactive Map",
+  "alert": "Alert",
+  "comment": "Comment",
+  "add_alert": "Add Alert",
+  "add_comment": "Add a comment...",
+  "confirm": "Confirm",
+  "deny": "Deny",
+  "report": "Report",
+  "created_by": "By {name}",
+  "created_at": "Created on {date}",
+  "credibility": "Credibility: {value}/5",
+  "no_comment": "No comments yet. Be the first!"
+} 

@@ -1,0 +1,18 @@
+{
+  "app_title": "Infractions Routières Mali",
+  "login": "Connexion",
+  "logout": "Déconnexion",
+  "map": "Carte",
+  "interactive_map": "Carte interactive",
+  "alert": "Alerte",
+  "comment": "Commentaire",
+  "add_alert": "Ajouter une alerte",
+  "add_comment": "Ajouter un commentaire...",
+  "confirm": "Confirmer",
+  "deny": "Invalider",
+  "report": "Signaler",
+  "created_by": "Par {name}",
+  "created_at": "Créé le {date}",
+  "credibility": "Crédibilité: {value}/5",
+  "no_comment": "Aucun commentaire. Soyez le premier !"
+} 

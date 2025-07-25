@@ -1,0 +1,418 @@
+{
+  "metadata": {
+    "title": "Amendes et autres sanctions relatives à la circulation routière",
+    "country": "Mali",
+    "source": "Arrêté n°02-2492/MET-MEF-MJ-MSIPC du 11 décembre 2002",
+    "reference": "Décret n° 1999-134 du 26 mai 1999 modifié",
+    "currency": "FCFA",
+    "date_issued": "2002-12-11",
+    "last_updated": "2024-06-07",
+    "sources": [
+      "Décret n° 1999-134 du 26 mai 1999",
+      "Décret n° 06-413/P-RM du 27 septembre 2005",
+      "Code pénal malien (2001, maj 2016)"
+    ],
+    "mise_a_jour": "2019-06-02",
+    "devise": "FCFA"
+  },
+  "violations": [
+    {
+      "class": "1ère classe",
+      "items": [
+        {
+          "id": "C1-01",
+          "description": "Pneumatiques en mauvais état",
+          "fine": 300,
+          "article": "Art. 117",
+          "vehicle_types": ["Tous"]
+        },
+        {
+          "id": "C1-02",
+          "description": "Dispositif de freinage défectueux",
+          "fine": 300,
+          "article": "Art. 76",
+          "vehicle_types": ["Tous"]
+        },
+        {
+          "id": "C1-03",
+          "description": "Dispositif réfléchissant rouge visible de l'arrière (cycles)",
+          "fine": 300,
+          "article": "Art. 76",
+          "vehicle_types": ["Cycles"]
+        },
+        {
+          "id": "C1-04",
+          "description": "Absence de sonnette (cycles)",
+          "fine": 300,
+          "article": "Art. 76",
+          "vehicle_types": ["Cycles"]
+        },
+        {
+          "id": "C1-05",
+          "description": "Absence de dispositifs réfléchissants latéraux (cycles)",
+          "fine": 300,
+          "article": "Art. 76",
+          "vehicle_types": ["Cycles"]
+        },
+        {
+          "id": "C1-06",
+          "description": "Absence de feux de position (cycles)",
+          "fine": 300,
+          "article": "Art. 76",
+          "vehicle_types": ["Cycles"]
+        },
+        {
+          "id": "C1-07",
+          "description": "Absence de catadioptres (cycles)",
+          "fine": 300,
+          "article": "Art. 76",
+          "vehicle_types": ["Cycles"]
+        }
+      ]
+    },
+    {
+      "class": "2ème classe",
+      "items": [
+        {
+          "id": "C2-01",
+          "description": "Chevauchement d'une ligne continue",
+          "fine": 500,
+          "article": "Art. 5",
+          "vehicle_types": ["Tous"]
+        },
+        {
+          "id": "C2-02",
+          "description": "Conduite sans port de ceinture de sécurité hors agglomération",
+          "fine": 500,
+          "article": "Art. 111",
+          "vehicle_types": ["Motorisés"]
+        },
+        {
+          "id": "C2-03",
+          "description": "Transport d'enfants de moins de 10 ans aux places avant (sauf impossibilité)",
+          "fine": 500,
+          "article": "Art. 27",
+          "vehicle_types": ["Motorisés"]
+        },
+        {
+          "id": "C2-04",
+          "description": "Non-respect des signalisations temporaires de chantier",
+          "fine": 500,
+          "article": "Art. 8",
+          "vehicle_types": ["Tous"]
+        },
+        {
+          "id": "C2-05",
+          "description": "Absence de plaque d'immatriculation (cyclomoteur)",
+          "fine": 500,
+          "article": "Art. 119",
+          "vehicle_types": ["Cyclomoteurs"]
+        }
+      ]
+    },
+    {
+      "class": "3ème classe",
+      "items": [
+        {
+          "id": "C3-01",
+          "description": "Non-respect des règles concernant les barrières et passages de ponts",
+          "fine_light": 6000,
+          "fine_heavy": 6500,
+          "article": "Art. 112/108",
+          "vehicle_types": ["Différencié"]
+        },
+        {
+          "id": "C3-02",
+          "description": "Absence de plaques d'immatriculation",
+          "fine_light": 6000,
+          "fine_heavy": 6500,
+          "article": "Art. 119",
+          "vehicle_types": ["Différencié"]
+        },
+        {
+          "id": "C3-03",
+          "description": "Excès de vitesse supérieur à 30 km/h",
+          "fine_light": 6000,
+          "fine_heavy": 6500,
+          "article": "Art. 8",
+          "vehicle_types": ["Différencié"]
+        },
+        {
+          "id": "C3-04",
+          "description": "Franchissement de feu rouge",
+          "fine_light": 6000,
+          "fine_heavy": 6500,
+          "article": "Art. 14",
+          "vehicle_types": ["Différencié"]
+        }
+      ]
+    },
+    {
+      "class": "Sanctions non forfaitaires",
+      "items": [
+        {
+          "id": "SNF-01",
+          "description": "Téléphone au volant",
+          "fine_min": 3000,
+          "fine_max": 15000,
+          "article": "Art. 3(4) Décret 06-413",
+          "vehicle_types": ["Motorisés"],
+          "retenue_points": 3
+        },
+        {
+          "id": "SNF-02",
+          "description": "Excès de vitesse",
+          "fine_min": 3000,
+          "fine_max": 15000,
+          "article": "Art. 8 Décret 06-413",
+          "vehicle_types": ["Motorisés"],
+          "retenue_points": 4
+        },
+        {
+          "id": "SNF-03",
+          "description": "Fuite suite à accident",
+          "fine_min": 20000,
+          "fine_max": 200000,
+          "prison_min": 11,
+          "prison_max": 90,
+          "prison_unit": "jours",
+          "article": "Art. 319 Code pénal",
+          "vehicle_types": ["Tous"]
+        },
+        {
+          "id": "SNF-04",
+          "description": "Conduite sous stupéfiants",
+          "fine_min": 20000,
+          "fine_max": 200000,
+          "prison_min": 11,
+          "prison_max": 90,
+          "prison_unit": "jours",
+          "article": "Art. 319 Code pénal",
+          "vehicle_types": ["Motorisés"],
+          "suspension_permis": true
+        },
+        {
+          "id": "SNF-05",
+          "description": "Refus d'obtempérer à une sommation de s'arrêter",
+          "fine_min": 20000,
+          "fine_max": 200000,
+          "prison_min": 11,
+          "prison_max": 90,
+          "prison_unit": "jours",
+          "article": "Art. 320 Code pénal",
+          "vehicle_types": ["Tous"]
+        },
+        {
+          "id": "SNF-06",
+          "description": "Fausse immatriculation",
+          "fine_min": 25000,
+          "fine_max": 250000,
+          "prison_min": 2,
+          "prison_max": 24,
+          "prison_unit": "mois",
+          "article": "Art. 321 Code pénal",
+          "vehicle_types": ["Tous"],
+          "confiscation_vehicule": true
+        }
+      ]
+    },
+    {
+      "class": "Délits",
+      "items": [
+        {
+          "id": "D-01",
+          "description": "Fuite suite à un accident",
+          "penalties": [
+            {"type": "prison", "duration": "11 jours à 3 mois"},
+            {"type": "amende", "min": 20000, "max": 200000}
+          ],
+          "article": "Art. 319 Code pénal"
+        },
+        {
+          "id": "D-02",
+          "description": "Conduite en état d'ivresse ou sous stupéfiants",
+          "penalties": [
+            {"type": "prison", "duration": "11 jours à 3 mois"},
+            {"type": "amende", "min": 20000, "max": 200000}
+          ],
+          "article": "Art. 319 Code pénal"
+        },
+        {
+          "id": "D-03",
+          "description": "Refus d'obtempérer à une sommation de s'arrêter",
+          "penalties": [
+            {"type": "prison", "duration": "11 jours à 3 mois"},
+            {"type": "amende", "min": 20000, "max": 200000}
+          ],
+          "article": "Art. 320 Code pénal"
+        }
+      ]
+    }
+  ],
+  "contraventions_detaillees": {
+    "classe_1": {
+      "categories": [
+        {
+          "id": "VEHICULES_GENERAUX",
+          "label": "Véhicules généraux",
+          "items": [
+            {
+              "id": "VG-01",
+              "description": "Pneumatiques en mauvais état",
+              "article": "Art. 117",
+              "amende": 300,
+              "vehicules_concernees": ["Tous"],
+              "equipement": true
+            },
+            {
+              "id": "VG-02",
+              "description": "Dispositif de freinage défectueux",
+              "article": "Art. 76",
+              "amende": 300,
+              "vehicules_concernees": ["Tous"],
+              "securite": true
+            }
+          ]
+        },
+        {
+          "id": "CYCLES",
+          "label": "Cycles",
+          "items": [
+            {
+              "id": "CY-01",
+              "description": "Dispositif réfléchissant rouge visible de l'arrière",
+              "article": "Art. 76",
+              "amende": 300,
+              "equipement": true,
+              "position": "Arrière"
+            },
+            {
+              "id": "CY-02",
+              "description": "Plaque d'identification du propriétaire",
+              "article": "Art. 76",
+              "amende": 300,
+              "administration": true
+            }
+          ]
+        }
+      ]
+    },
+    "classe_2": {
+      "categories": [
+        {
+          "id": "COMPORTEMENT",
+          "label": "Infractions de comportement",
+          "items": [
+            {
+              "id": "CB-201",
+              "description": "Non-respect du sens imposé à la circulation",
+              "article": "Art. 10",
+              "amendes": {
+                "leger": 2500,
+                "lourd": 3000
+              },
+              "type": "conduite_dangereuse"
+            },
+            {
+              "id": "CB-202",
+              "description": "Dépassement à droite interdit",
+              "article": "Art. 10",
+              "amendes": {
+                "leger": 2500,
+                "lourd": 3000
+              },
+              "risque": "collision_frontale"
+            }
+          ]
+        },
+        {
+          "id": "POIDS_CHARGEMENT",
+          "label": "Poids et chargement",
+          "items": [
+            {
+              "id": "PC-201",
+              "description": "Poids réel excédant le PTAC",
+              "article": "Art. 30",
+              "amendes": {
+                "leger": 2000,
+                "lourd": 3000
+              },
+              "seuil": "> PTAC"
+            }
+          ]
+        }
+      ]
+    },
+    "classe_3": {
+      "categories": [
+        {
+          "id": "INFRASTRUCTURES",
+          "label": "Infractions liées aux infrastructures",
+          "items": [
+            {
+              "id": "INF-301",
+              "description": "Non-respect des règles sur les barrières et passages de ponts",
+              "article": {
+                "principal": "Art. 112",
+                "secondaire": "Art. 108"
+              },
+              "amendes": {
+                "leger": 6000,
+                "lourd": 6500
+              },
+              "risque": "accident_grave",
+              "zone": ["ponts", "barrières"]
+            }
+          ]
+        },
+        {
+          "id": "ADMINISTRATIF",
+          "label": "Défauts administratifs",
+          "items": [
+            {
+              "id": "ADM-301",
+              "description": "Usage de pièces administratives périmées ou annulées",
+              "article": {
+                "principal": "Art. 112",
+                "secondaire": "Art. 108"
+              },
+              "amendes": {
+                "leger": 6000,
+                "lourd": 6500
+              },
+              "documents": ["permis", "carte_grise", "assurance"]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "payment_info": {
+    "early_payment": {
+      "discount_period": 15,
+      "discount_rate": 20,
+      "unit": "days"
+    },
+    "late_payment": {
+      "penalty_rate": 10,
+      "penalty_period": "monthly",
+      "max_penalty": 100
+    }
+  },
+  "appeals_process": {
+    "time_limit": 30,
+    "authority": "Tribunal de Commune",
+    "required_docs": ["Original PV", "Supporting evidence"]
+  },
+  "statistiques": {
+    "total_infractions": 60,
+    "amende_min": 300,
+    "amende_max": 250000,
+    "repartition_classes": {
+      "classe_1": 14,
+      "classe_2": 28,
+      "classe_3": 12,
+      "sanctions_non_forfaitaires": 6
+    }
+  }
+}

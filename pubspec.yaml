@@ -10,7 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  app_settings: ^5.1.1 
+  app_settings: ^6.1.1 
 
   # UI Components
   cupertino_icons: ^1.0.2
@@ -19,10 +19,10 @@ dependencies:
   intl: ^0.20.2
 
   # Location Services
-  geolocator: ^10.1.0
-  geocoding: ^2.1.1
+  geolocator: ^14.0.2
+  geocoding: ^4.0.0
   google_maps_flutter: ^2.6.0
-  flutter_map: ^6.1.0
+  flutter_map: ^8.1.1
   latlong2: ^0.9.0
 
   # Networking & Storage
@@ -32,7 +32,7 @@ dependencies:
   path_provider: ^2.1.1
 
   # Permissions
-  permission_handler: ^11.0.1
+  permission_handler: ^12.0.1
 
   # Firebase Services
   firebase_core: ^3.15.2
@@ -41,8 +41,8 @@ dependencies:
   cloud_firestore: ^5.6.12
 
   # Authentication
-  google_sign_in: ^6.1.0
-  flutter_facebook_auth: ^6.1.1
+  google_sign_in: ^7.1.1
+  flutter_facebook_auth: ^7.1.2
 
   # Localization
   easy_localization: ^3.0.3
@@ -58,10 +58,11 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^3.0.0
-  flutter_launcher_icons: ^0.13.1
+  flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.14.4
   mockito: ^5.4.0  #
   build_runner: ^2.4.6  # Needed for code generation
+  mocktail: ^1.0.0
 
 flutter:
   uses-material-design: true

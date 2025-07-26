@@ -3,9 +3,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:infractions_mali/main.dart';
 import 'package:infractions_mali/screens/home_screen.dart';
 import 'package:infractions_mali/screens/community_map_screen.dart';
-import 'package:infractions_mali/screens/interactive_map_screen.dart'; // Added if needed
-import 'package:infractions_mali/services/alert_service.dart'; // For mock services
-import 'package:mockito/mockito.dart'; // For mocking dependencies
+import 'package:infractions_mali/screens/interactive_map_screen.dart';
+import 'package:infractions_mali/services/alert_service.dart';
+import 'package:mockito/mockito.dart';
 
 // Mock classes for dependencies
 class MockAlertService extends Mock implements AlertService {}
@@ -20,6 +20,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: InfractionsApp(alertService: mockAlertService),
+        ),
       );
 
       // Verify home screen is shown
@@ -31,9 +32,10 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: InfractionsApp(alertService: mockAlertService),
+        ),
       );
 
-      // Tap on the map navigation item (adjust based on your actual navigation)
+      // Tap on the map navigation item
       await tester.tap(find.byKey(const Key('map_navigation_button')));
       await tester.pumpAndSettle();
 
@@ -46,7 +48,8 @@ void main() {
     testWidgets('Shows loading indicator initially', (WidgetTester tester) async {
       // Setup mock data
       when(mockAlertService.getAlertsNearLocation(
-        any, any,
+        any,
+        any,
         radiusInKm: anyNamed('radiusInKm'),
         userId: anyNamed('userId'),
       )).thenAnswer((_) async => []);
@@ -76,7 +79,8 @@ void main() {
       ];
 
       when(mockAlertService.getAlertsNearLocation(
-        any, any,
+        any,
+        any,
         radiusInKm: anyNamed('radiusInKm'),
         userId: anyNamed('userId'),
       )).thenAnswer((_) async => testAlerts);
@@ -95,7 +99,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // Verify alerts are displayed
-      expect(find.byType(Marker), findsNWidgets(testAlerts.length));
+      expect(find.byType(ListTile), findsNWidgets(testAlerts.length));
       expect(find.text('Radar mobile'), findsOneWidget);
     });
   });
@@ -120,7 +124,7 @@ void main() {
         ),
       );
 
-      // Tap on first infraction category (adjust selector based on your UI)
+      // Tap on first infraction category
       await tester.tap(find.byKey(const Key('radar_category')).first);
       await tester.pumpAndSettle();
 

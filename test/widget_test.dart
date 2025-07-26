@@ -1,12 +1,18 @@
+import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-
-class MockAlertService extends Mock implements AlertService {}
+import 'package:infractions_mali/test/test_helpers.dart';
+import 'package:infractions_mali/main.dart';
 
 void main() {
-  final mockAlertService = MockAlertService();
-  
-  testWidgets('Test description', (tester) async {
-    when(() => mockAlertService.method()).thenReturn(value);
-    // Your test code
+  late MockAlertService mockAlertService;
+
+  setUpAll(() {
+    mockAlertService = MockAlertService();
+    setupTestMocks();
+  });
+
+  testWidgets('App launches', (tester) async {
+    await tester.pumpWidget(InfractionsApp(alertService: mockAlertService));
+    expect(find.byType(HomeScreen), findsOneWidget);
   });
 }

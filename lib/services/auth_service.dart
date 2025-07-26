@@ -1,120 +1,165 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
-
+import 'package:flutter/foundation.dart';
 
 class AuthService {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseAuth _auth;
+  final GoogleSignIn _googleSignIn;
+  final FacebookAuth _facebookAuth;
 
-  // 🔐 Connexion avec Google
+  // Dependency injection for testability
+  AuthService({
+    FirebaseAuth? auth,
+    GoogleSignIn? googleSignIn,
+    FacebookAuth? facebookAuth,
+  })  : _auth = auth ?? FirebaseAuth.instance,
+        _googleSignIn = googleSignIn ?? GoogleSignIn(),
+        _facebookAuth = facebookAuth ?? FacebookAuth.instance;
+
+  /// Google Sign-In
   Future<UserCredential?> signInWithGoogle() async {
-  try {
-    final GoogleSignIn googleSignIn = GoogleSignIn();
-    final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+    try {
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      if (googleUser == null) return null;
 
-    if (googleUser == null) return null; // L'utilisateur a annulé la connexion
+      final GoogleSignInAuthentication googleAuth = 
+          await googleUser.authentication;
 
-    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final OAuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
 
-    final OAuthCredential credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth.accessToken,
-      idToken: googleAuth.idToken,
-    );
-
-    return await FirebaseAuth.instance.signInWithCredential(credential);
-  } catch (e) {
-    print('Erreur Google Sign-In: $e');
-    return null;
+      return await _auth.signInWithCredential(credential);
+    } catch (e, stackTrace) {
+      debugPrint('Google Sign-In Error: $e');
+      debugPrint('Stack Trace: $stackTrace');
+      rethrow;
+    }
   }
 
-}
-
-
-  // 🔐 Connexion avec Facebook
+  /// Facebook Sign-In
   Future<UserCredential?> signInWithFacebook() async {
     try {
-      final LoginResult result = await FacebookAuth.instance.login();
-
+      final LoginResult result = await _facebookAuth.login();
       if (result.status != LoginStatus.success) return null;
 
-      final OAuthCredential facebookAuthCredential =
+      final OAuthCredential credential = 
           FacebookAuthProvider.credential(result.accessToken!.token);
 
-      return await _auth.signInWithCredential(facebookAuthCredential);
-    } catch (e) {
-      print('Erreur Facebook Sign-In: $e');
-      return null;
+      return await _auth.signInWithCredential(credential);
+    } catch (e, stackTrace) {
+      debugPrint('Facebook Sign-In Error: $e');
+      debugPrint('Stack Trace: $stackTrace');
+      rethrow;
     }
   }
 
-  // 📧 Connexion avec email et mot de passe
-  Future<UserCredential?> signInWithEmail(String email, String password) async {
+  /// Email/Password Sign-In
+  Future<UserCredential> signInWithEmail({
+    required String email,
+    required String password,
+  }) async {
     try {
       return await _auth.signInWithEmailAndPassword(
-          email: email, password: password);
-    } catch (e) {
-      print('Erreur login email: $e');
-      return null;
+        email: email.trim(),
+        password: password,
+      );
+    } on FirebaseAuthException catch (e) {
+      debugPrint('Email Sign-In Error: ${e.code} - ${e.message}');
+      rethrow;
     }
   }
 
-  // 🆕 Inscription avec email et mot de passe
-  Future<UserCredential?> registerWithEmail(
-      String email, String password) async {
+  /// Email/Password Registration
+  Future<UserCredential> registerWithEmail({
+    required String email,
+    required String password,
+  }) async {
     try {
       return await _auth.createUserWithEmailAndPassword(
-          email: email, password: password);
-    } catch (e) {
-      print('Erreur inscription: $e');
-      return null;
+        email: email.trim(),
+        password: password,
+      );
+    } on FirebaseAuthException catch (e) {
+      debugPrint('Registration Error: ${e.code} - ${e.message}');
+      rethrow;
     }
   }
 
-  // 🚪 Déconnexion de tous les fournisseurs
+  /// Sign Out
   Future<void> signOut() async {
     try {
-      await _auth.signOut();
-      await GoogleSignIn().signOut();
-      await FacebookAuth.instance.logOut();
-    } catch (e) {
-      print('Erreur déconnexion: $e');
+      await Future.wait([
+        _auth.signOut(),
+        _googleSignIn.signOut(),
+        _facebookAuth.logOut(),
+      ]);
+    } catch (e, stackTrace) {
+      debugPrint('Sign Out Error: $e');
+      debugPrint('Stack Trace: $stackTrace');
+      rethrow;
     }
   }
 
-  // 👤 Utilisateur actuel
+  /// Current User
   User? get currentUser => _auth.currentUser;
 
-  // 📩 Envoyer un email de vérification
+  /// Email Verification
   Future<void> sendEmailVerification() async {
     try {
       final user = _auth.currentUser;
       if (user != null && !user.emailVerified) {
         await user.sendEmailVerification();
       }
-    } catch (e) {
-      print('Erreur envoi email vérification: $e');
+    } catch (e, stackTrace) {
+      debugPrint('Email Verification Error: $e');
+      debugPrint('Stack Trace: $stackTrace');
+      rethrow;
     }
   }
 
-  // ✅ Vérifier si l'email est vérifié (avec reload)
+  /// Check Email Verification (with reload)
   Future<bool> checkEmailVerification() async {
     try {
       final user = _auth.currentUser;
-      await user?.reload();
-      return user?.emailVerified ?? false;
-    } catch (e) {
-      print('Erreur vérification email: $e');
+      if (user != null) {
+        await user.reload();
+        return user.emailVerified;
+      }
+      return false;
+    } catch (e, stackTrace) {
+      debugPrint('Email Check Error: $e');
+      debugPrint('Stack Trace: $stackTrace');
       return false;
     }
   }
 
-  // ✅ Getter rapide (non reloadé)
-  bool get isEmailVerified {
-    final user = _auth.currentUser;
-    return user?.emailVerified ?? false;
+  /// Quick Email Verification Check
+  bool get isEmailVerified => _auth.currentUser?.emailVerified ?? false;
+
+  /// User Changes Stream
+  Stream<User?> get userChanges => _auth.userChanges();
+
+  /// Additional Security Methods
+  Future<void> updatePassword(String newPassword) async {
+    try {
+      await _auth.currentUser?.updatePassword(newPassword);
+    } catch (e, stackTrace) {
+      debugPrint('Password Update Error: $e');
+      debugPrint('Stack Trace: $stackTrace');
+      rethrow;
+    }
   }
 
-  // 🔄 Écouter les changements d'état utilisateur
-  Stream<User?> get userChanges => _auth.userChanges();
+  Future<void> sendPasswordResetEmail(String email) async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email.trim());
+    } catch (e, stackTrace) {
+      debugPrint('Password Reset Error: $e');
+      debugPrint('Stack Trace: $stackTrace');
+      rethrow;
+    }
+  }
 }
-

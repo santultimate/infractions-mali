@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import '../models/infraction.dart';
@@ -72,7 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _loadInfractions() async {
     try {
-      final infractions = await _infractionService.loadInfractions();
+      final infractions = await InfractionService.loadInfractions();
       setState(() {
         _allInfractions = infractions;
         _filteredInfractions = infractions;
@@ -369,7 +370,7 @@ class _HomeScreenState extends State<HomeScreen> {
       tooltip: 'login'.tr(),
       onPressed: () => Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const LoginScreen()),
+        MaterialPageRoute(builder: (context) => LoginScreen()),
       ),
     );
   }
@@ -424,7 +425,7 @@ class _HomeScreenState extends State<HomeScreen> {
         Navigator.pop(context);
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const StatisticsScreen()),
+          MaterialPageRoute(builder: (context) => StatisticsScreen()),
         );
       },
     );
@@ -438,7 +439,7 @@ class _HomeScreenState extends State<HomeScreen> {
         Navigator.pop(context);
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const SettingsScreen()),
+          MaterialPageRoute(builder: (context) => SettingsScreen()),
         );
       },
     );

@@ -46,7 +46,7 @@ class AuthService {
       if (result.status != LoginStatus.success) return null;
 
       final OAuthCredential credential = 
-          FacebookAuthProvider.credential(result.accessToken!.token);
+          FacebookAuthProvider.credential(result.accessToken!.tokenString);
 
       return await _auth.signInWithCredential(credential);
     } catch (e, stackTrace) {
@@ -162,4 +162,10 @@ class AuthService {
       rethrow;
     }
   }
+}
+
+// The AccessToken class already provides a 'token' property, so this extension is unnecessary and can be removed.
+
+extension on GoogleSignInAuthentication {
+  get accessToken => null;
 }

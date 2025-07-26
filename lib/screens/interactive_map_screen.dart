@@ -32,35 +32,35 @@ class _InteractiveMapScreenState extends State<InteractiveMapScreen> {
     _loadAlerts();
   }
 
-Future<void> _loadAlerts() async {
-  try {
-    if (!mounted) return;
-    setState(() => _isLoading = true);
-    
-    final userId = _authService.currentUser?.uid;
-    final alerts = await _alertService.getAlertsNearLocation(
-      _center.latitude,      // latitude (positional)
-      _center.longitude,     // longitude (positional)
-      radiusInKm: 50,        // named
-      userId: userId,        // named
-    );
-
-    if (!mounted) return;
-    setState(() {
-      _alerts = alerts;
-      _lastUpdateTime = DateTime.now();
-    });
-  } catch (e) {
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('error_loading_alerts'.tr())),
+  Future<void> _loadAlerts() async {
+    try {
+      if (!mounted) return;
+      setState(() => _isLoading = true);
+      
+      final userId = _authService.currentUser?.uid;
+      final alerts = await _alertService.getAlertsNearLocation(
+        _center.latitude,
+        _center.longitude,
+        radiusInKm: 50,
+        userId: userId,
       );
-      debugPrint('Error loading alerts: $e');
+
+      if (!mounted) return;
+      setState(() {
+        _alerts = alerts;
+        _lastUpdateTime = DateTime.now();
+      });
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('error_loading_alerts'.tr())),
+        );
+        debugPrint('Error loading alerts: $e');
+      }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
     }
-  } finally {
-    if (mounted) setState(() => _isLoading = false);
   }
-}
 
   List<Alert> get _filteredAlerts {
     return _alerts.where((alert) {
@@ -157,42 +157,42 @@ Future<void> _loadAlerts() async {
       body: Stack(
         children: [
           FlutterMap(
-            mapController: _mapController,
-            options: MapOptions(
-              center: _center,
-              zoom: 12.0,
-              onPositionChanged: (position, hasGesture) {
-                if (hasGesture && position.center != null) {
-                  setState(() => _center = position.center!);
-                }
-              },
-            ),
-            children: [
-              TileLayer(
-                urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                subdomains: const ['a', 'b', 'c'],
-                userAgentPackageName: 'com.example.infractions_mali',
-              ),
-              CircleLayer(
-                circles: [
-                  CircleMarker(
-                    point: _center,
-                    color: Colors.blue.withOpacity(0.1),
-                    borderColor: Colors.blue,
-                    borderStrokeWidth: 2.0,
-                    radius: _radiusKm * 1000,
-                  ),
-                ],
-              ),
-              MarkerLayer(
-                markers: _filteredAlerts.map((alert) => _buildAlertMarker(alert)).toList(),
-              ),
-            ],
-          ),
-          if (_isLoading)
-            const Center(child: CircularProgressIndicator()),
-          _buildMapControls(),
-          _buildRadiusFilter(),
+  mapController: _mapController,
+  options: MapOptions(
+    center: _center,
+    zoom: 12.0,
+    onTap: (tapPosition, latlng) {
+      setState(() => _center = latlng);
+    },
+    minZoom: 12.0,
+    onPositionChanged: (position, hasGesture) {
+      if (hasGesture && position.center != null) {
+        setState(() => _center = position.center!);
+      }
+    },
+  ),
+  children: [
+    TileLayer(
+      urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+      subdomains: const ['a', 'b', 'c'],
+      userAgentPackageName: 'com.example.infractions_mali',
+    ),
+    CircleLayer(
+      circles: [
+        CircleMarker(
+          point: _center,
+          color: Colors.blue.withOpacity(0.1),
+          borderColor: Colors.blue,
+          borderStrokeWidth: 2.0,
+          radius: _radiusKm * 1000,
+        ),
+      ],
+    ),
+    MarkerLayer(
+      markers: _filteredAlerts.map((alert) => _buildAlertMarker(alert)).toList(),
+    ),
+  ],
+),
         ],
       ),
     );
@@ -240,7 +240,7 @@ Future<void> _loadAlerts() async {
         children: [
           FloatingActionButton(
             heroTag: 'recenter',
-            onPressed: () => _mapController.move(_center, 12.0),
+            onPressed: () => _mapController.move(_center, _mapController.zoom),
             tooltip: 'recenter'.tr(),
             child: const Icon(Icons.my_location),
           ),
@@ -248,8 +248,8 @@ Future<void> _loadAlerts() async {
           FloatingActionButton(
             heroTag: 'zoom_in',
             onPressed: () => _mapController.move(
-              _mapController.center, 
-              _mapController.zoom + 1
+              _center, 
+              _mapController.camera.zoom + 1
             ),
             tooltip: 'zoom_in'.tr(),
             mini: true,
@@ -259,8 +259,8 @@ Future<void> _loadAlerts() async {
           FloatingActionButton(
             heroTag: 'zoom_out',
             onPressed: () => _mapController.move(
-              _mapController.center, 
-              _mapController.zoom - 1
+              _center, 
+              _mapController.camera.zoom - 1
             ),
             tooltip: 'zoom_out'.tr(),
             mini: true,
@@ -320,24 +320,24 @@ Future<void> _loadAlerts() async {
   }
 
   IconData _getAlertIcon(AlertType type) {
-    return switch (type) {
-      AlertType.accident => Icons.car_crash,
-      AlertType.police => Icons.local_police,
-      AlertType.roadClosed => Icons.block,
-      AlertType.hazard => Icons.warning,
-      AlertType.trafficJam => Icons.traffic,
-      _ => Icons.warning_amber,
-    };
+    switch (type) {
+      case AlertType.accident: return Icons.car_crash;
+      case AlertType.police: return Icons.local_police;
+      case AlertType.roadClosed: return Icons.block;
+      case AlertType.hazard: return Icons.warning;
+      case AlertType.trafficJam: return Icons.traffic;
+      default: return Icons.warning_amber;
+    }
   }
 
   Color _getAlertColor(AlertType type) {
-    return switch (type) {
-      AlertType.accident => Colors.red,
-      AlertType.police => Colors.blue,
-      AlertType.roadClosed => Colors.orange,
-      AlertType.hazard => Colors.amber,
-      AlertType.trafficJam => Colors.purple,
-      _ => Colors.grey,
-    };
+    switch (type) {
+      case AlertType.accident: return Colors.red;
+      case AlertType.police: return Colors.blue;
+      case AlertType.roadClosed: return Colors.orange;
+      case AlertType.hazard: return Colors.amber;
+      case AlertType.trafficJam: return Colors.purple;
+      default: return Colors.grey;
+    }
   }
 }

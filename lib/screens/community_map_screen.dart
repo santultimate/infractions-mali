@@ -6,7 +6,6 @@ import 'package:intl/intl.dart';
 import '../models/alert.dart';
 import '../services/auth_service.dart';
 import '../services/alert_service.dart';
-import '../widgets/add_alert_dialog.dart';
 
 class CommunityMapScreen extends StatefulWidget {
   const CommunityMapScreen({super.key});
@@ -350,6 +349,42 @@ class _CommunityMapScreenState extends State<CommunityMapScreen> {
       case AlertType.roadClosed: return Colors.purple;
       default: return Colors.grey;
     }
+  }
+}
+
+class AddAlertDialog extends StatelessWidget {
+  final Position currentPosition;
+  final String currentUserId;
+  final Function onAlertAdded;
+
+  const AddAlertDialog({
+    super.key,
+    required this.currentPosition,
+    required this.currentUserId,
+    required this.onAlertAdded,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    // Replace this with your actual dialog UI
+    return AlertDialog(
+      title: Text('add_alert'.tr()),
+      content: Text('Dialog content goes here.'),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text('cancel'.tr()),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            // Call onAlertAdded after adding alert
+            onAlertAdded();
+            Navigator.pop(context);
+          },
+          child: Text('submit'.tr()),
+        ),
+      ],
+    );
   }
 }
 

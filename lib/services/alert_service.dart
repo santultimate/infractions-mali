@@ -6,15 +6,16 @@ import 'package:flutter/foundation.dart';
 import '../models/alert.dart';
 
 class AlertService {
-  static const String _baseUrl = 'https://api.waze.com/row-rtserver/web/TGeoRSS';
+  static const String _baseUrl =
+      'https://api.waze.com/row-rtserver/web/TGeoRSS';
   static const double _metersPerDegree = 111000;
-  final FirebaseFirestore _firestore;
+  final FirebaseFirestore? _firestore;
 
   // Inject Firestore for testability
-  AlertService({FirebaseFirestore? firestore})
-      : _firestore = firestore ?? FirebaseFirestore.instance;
+  AlertService({FirebaseFirestore? firestore}) : _firestore = firestore;
 
-  CollectionReference get _alertsCollection => _firestore.collection('alerts');
+  CollectionReference? get _alertsCollection =>
+      _firestore?.collection('alerts');
 
   Future<List<Alert>> getAlertsNearLocation(
     double latitude,
@@ -24,33 +25,41 @@ class AlertService {
     int limit = 50,
   }) async {
     try {
+      if (_alertsCollection == null) {
+        debugPrint('Firestore not available, returning empty list');
+        return [];
+      }
+
       final radiusInMeters = radiusInKm * 1000;
       final degreeDelta = radiusInMeters / _metersPerDegree;
 
-      final querySnapshot = await _alertsCollection
-          .where('location', isGreaterThan: GeoPoint(
-            latitude - degreeDelta,
-            longitude - degreeDelta,
-          ))
-          .where('location', isLessThan: GeoPoint(
-            latitude + degreeDelta,
-            longitude + degreeDelta,
-          ))
+      final querySnapshot = await _alertsCollection!
+          .where('location',
+              isGreaterThan: GeoPoint(
+                latitude - degreeDelta,
+                longitude - degreeDelta,
+              ))
+          .where('location',
+              isLessThan: GeoPoint(
+                latitude + degreeDelta,
+                longitude + degreeDelta,
+              ))
           .orderBy('createdAt', descending: true)
           .limit(limit)
           .get();
 
       return querySnapshot.docs
           .map((doc) => Alert.fromFirestore(
-                doc.data() as Map<String, dynamic>,
-                doc.id,
+                doc as DocumentSnapshot<Map<String, dynamic>>,
               ))
-          .where((alert) => _distanceBetween(
+          .where((alert) =>
+              _distanceBetween(
                 latitude,
                 longitude,
                 alert.location['latitude']!,
                 alert.location['longitude']!,
-              ) <= radiusInMeters)
+              ) <=
+              radiusInMeters)
           .toList();
     } catch (e) {
       debugPrint('Error fetching alerts: $e');
@@ -86,7 +95,12 @@ class AlertService {
       }
 
       // Create new alert document
-      await _alertsCollection.add({
+      if (_alertsCollection == null) {
+        debugPrint('Firestore not available, alert submission failed');
+        return false;
+      }
+
+      await _alertsCollection!.add({
         'type': type.toString().split('.').last,
         'title': title.trim(),
         'description': description.trim(),
@@ -117,9 +131,14 @@ class AlertService {
     required String userId,
     required bool isConfirmed,
   }) async {
-    final docRef = _alertsCollection.doc(alertId);
+    if (_alertsCollection == null || _firestore == null) {
+      debugPrint('Firestore not available, confirmation failed');
+      return;
+    }
 
-    await _firestore.runTransaction((transaction) async {
+    final docRef = _alertsCollection!.doc(alertId);
+
+    await _firestore!.runTransaction((transaction) async {
       final doc = await transaction.get(docRef);
       if (!doc.exists) throw Exception('Alert not found');
 
@@ -144,23 +163,24 @@ class AlertService {
         'deniedBy': deniedBy,
         'confirmations': confirmedBy.length,
         'denials': deniedBy.length,
-        'credibility': _calculateCredibility(confirmedBy.length, deniedBy.length),
+        'credibility':
+            _calculateCredibility(confirmedBy.length, deniedBy.length),
         'updatedAt': Timestamp.now(),
       });
     });
   }
 
   Future<String?> _validateWithWaze(
-      Map<String, double> location,
-      AlertType type,
-      ) async {
+    Map<String, double> location,
+    AlertType type,
+  ) async {
     try {
       final response = await http.get(Uri.parse(
         '$_baseUrl?top=${location['latitude']! + 0.01}'
-            '&left=${location['longitude']! - 0.01}'
-            '&bottom=${location['latitude']! - 0.01}'
-            '&right=${location['longitude']! + 0.01}'
-            '&types=traffic,alerts',
+        '&left=${location['longitude']! - 0.01}'
+        '&bottom=${location['latitude']! - 0.01}'
+        '&right=${location['longitude']! + 0.01}'
+        '&types=traffic,alerts',
       ));
 
       if (response.statusCode == 200) {
@@ -174,7 +194,8 @@ class AlertService {
     }
   }
 
-  String? _analyzeWazeData(Map<String, dynamic> data, AlertType type, Map<String, double> location) {
+  String? _analyzeWazeData(
+      Map<String, dynamic> data, AlertType type, Map<String, double> location) {
     try {
       final alerts = data['alerts'] as List?;
       if (alerts == null) return null;

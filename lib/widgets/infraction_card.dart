@@ -19,7 +19,7 @@ Color _getClasseColor(String? classe) {
 class InfractionCard extends StatelessWidget {
   final Infraction infraction;
 
-  const InfractionCard({required this.infraction});
+  const InfractionCard({required this.infraction, required void Function() onTap});
 
   @override
   Widget build(BuildContext context) {

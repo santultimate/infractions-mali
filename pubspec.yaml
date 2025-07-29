@@ -10,7 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  app_settings: ^6.1.1 
+  # app_settings: ^6.1.1  # Temporarily disabled due to iOS compatibility issues 
 
   # UI Components
   cupertino_icons: ^1.0.2
@@ -30,6 +30,7 @@ dependencies:
   shared_preferences: ^2.2.2
   image_picker: ^1.0.4
   path_provider: ^2.1.1
+  url_launcher: ^6.2.4
 
   # Permissions
   permission_handler: ^12.0.1
@@ -61,8 +62,11 @@ dev_dependencies:
   flutter_lints: ^6.0.0
   flutter_launcher_icons: ^0.14.4
   mockito: ^5.4.0  #
-  build_runner: ^2.4.6  # Needed for code generation
+  build_runner: ^2.3.3  # Needed for code generation
   mocktail: ^1.0.0
+  integration_test:
+    sdk: flutter
+  
 
 flutter:
   uses-material-design: true
@@ -86,5 +90,19 @@ flutter_icons:
   android: true
   ios: true
   image_path: "assets/images/logo.png"
-  adaptive_icon_background: "#FFFFFF"  # Optional background color
-  adaptive_icon_foreground: "assets/images/logo_foreground.png"  # Optional foreground
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: "assets/images/logo_foreground.png"
+  remove_alpha_ios: true
+  min_sdk_android: 21
+  web:
+    generate: true
+    image_path: "assets/images/logo.png"
+    background_color: "#FFFFFF"
+    theme_color: "#FF0000"
+  windows:
+    generate: true
+    image_path: "assets/images/logo.png"
+    icon_size: 48
+  macos:
+    generate: true
+    image_path: "assets/images/logo.png"

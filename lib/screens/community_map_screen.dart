@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:app_settings/app_settings.dart';
+// import 'package:app_settings/app_settings.dart';  // Temporarily disabled
 import 'package:intl/intl.dart';
 import '../models/alert.dart';
 import '../services/auth_service.dart';
@@ -49,7 +49,7 @@ class _CommunityMapScreenState extends State<CommunityMapScreen> {
 
   Future<void> _checkLocationAndLoadAlerts() async {
     if (!mounted) return;
-    
+
     setState(() {
       _isLoading = true;
       _locationPermissionDenied = false;
@@ -90,13 +90,13 @@ class _CommunityMapScreenState extends State<CommunityMapScreen> {
 
   void _showLocationServiceError() {
     if (!mounted) return;
-    
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('location_disabled_message'.tr()),
         action: SnackBarAction(
           label: 'enable'.tr(),
-          onPressed: () => AppSettings.openAppSettings(),
+          onPressed: () => _showSettingsDialog(),
         ),
       ),
     );
@@ -105,12 +105,12 @@ class _CommunityMapScreenState extends State<CommunityMapScreen> {
 
   void _showLocationPermissionError() {
     if (!mounted) return;
-    
+
     setState(() {
       _isLoading = false;
       _locationPermissionDenied = true;
     });
-    
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('location_permission_denied_message'.tr()),
@@ -124,7 +124,7 @@ class _CommunityMapScreenState extends State<CommunityMapScreen> {
 
   Future<void> _showLocationPermissionPermanentError() async {
     if (!mounted) return;
-    
+
     final shouldOpenSettings = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
@@ -144,7 +144,7 @@ class _CommunityMapScreenState extends State<CommunityMapScreen> {
     );
 
     if (shouldOpenSettings == true) {
-      await AppSettings.openAppSettings();
+      _showSettingsDialog();
     }
 
     if (mounted) {
@@ -280,7 +280,7 @@ class _CommunityMapScreenState extends State<CommunityMapScreen> {
           ),
           const SizedBox(height: 16),
           TextButton(
-            onPressed: () => AppSettings.openAppSettings(),
+            onPressed: () => _showSettingsDialog(),
             child: Text('open_settings'.tr()),
           ),
         ],
@@ -333,22 +333,56 @@ class _CommunityMapScreenState extends State<CommunityMapScreen> {
 
   IconData _getAlertIcon(AlertType type) {
     switch (type) {
-      case AlertType.accident: return Icons.car_crash;
-      case AlertType.police: return Icons.local_police;
-      case AlertType.hazard: return Icons.warning;
-      case AlertType.roadClosed: return Icons.block;
-      default: return Icons.warning;
+      case AlertType.accident:
+        return Icons.car_crash;
+      case AlertType.police:
+        return Icons.local_police;
+      case AlertType.hazard:
+        return Icons.warning;
+      case AlertType.roadClosed:
+        return Icons.block;
+      default:
+        return Icons.warning;
     }
   }
 
   Color _getAlertColor(AlertType type) {
     switch (type) {
-      case AlertType.accident: return Colors.red;
-      case AlertType.police: return Colors.blue;
-      case AlertType.hazard: return Colors.orange;
-      case AlertType.roadClosed: return Colors.purple;
-      default: return Colors.grey;
+      case AlertType.accident:
+        return Colors.red;
+      case AlertType.police:
+        return Colors.blue;
+      case AlertType.hazard:
+        return Colors.orange;
+      case AlertType.roadClosed:
+        return Colors.purple;
+      default:
+        return Colors.grey;
     }
+  }
+
+  void _showSettingsDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('location_permission_required'.tr()),
+        content: Text('location_permission_denied_forever_message'.tr()),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('cancel'.tr()),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+              // Note: On iOS, we can't programmatically open settings
+              // The user will need to manually go to Settings > Privacy & Security > Location Services
+            },
+            child: Text('ok'.tr()),
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -431,21 +465,31 @@ class AlertDetailsSheet extends StatelessWidget {
 
   IconData _getAlertIcon(AlertType type) {
     switch (type) {
-      case AlertType.accident: return Icons.car_crash;
-      case AlertType.police: return Icons.local_police;
-      case AlertType.hazard: return Icons.warning;
-      case AlertType.roadClosed: return Icons.block;
-      default: return Icons.warning;
+      case AlertType.accident:
+        return Icons.car_crash;
+      case AlertType.police:
+        return Icons.local_police;
+      case AlertType.hazard:
+        return Icons.warning;
+      case AlertType.roadClosed:
+        return Icons.block;
+      default:
+        return Icons.warning;
     }
   }
 
   Color _getAlertColor(AlertType type) {
     switch (type) {
-      case AlertType.accident: return Colors.red;
-      case AlertType.police: return Colors.blue;
-      case AlertType.hazard: return Colors.orange;
-      case AlertType.roadClosed: return Colors.purple;
-      default: return Colors.grey;
+      case AlertType.accident:
+        return Colors.red;
+      case AlertType.police:
+        return Colors.blue;
+      case AlertType.hazard:
+        return Colors.orange;
+      case AlertType.roadClosed:
+        return Colors.purple;
+      default:
+        return Colors.grey;
     }
   }
 }

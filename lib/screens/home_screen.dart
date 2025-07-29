@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:infractions_mali/services/alert_service.dart';
 import '../models/infraction.dart';
 import '../services/infraction_service.dart';
 import '../services/orange_money_service.dart';
@@ -15,7 +17,14 @@ import 'statistics_screen.dart';
 import 'settings_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  final AlertService alertService;
+  final AuthService authService;
+
+  const HomeScreen({
+    Key? key,
+    required this.alertService,
+    required this.authService,
+  }) : super(key: key);
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -24,7 +33,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final InfractionService _infractionService = InfractionService();
   final OrangeMoneyService _orangeMoneyService = OrangeMoneyService();
-  final AuthService _authService = AuthService();
+  late final AuthService _authService;
 
   List<Infraction> _allInfractions = [];
   List<Infraction> _filteredInfractions = [];
@@ -53,6 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    _authService = widget.authService;
     _initializeData();
   }
 
@@ -188,7 +198,8 @@ class _HomeScreenState extends State<HomeScreen> {
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide.none,
         ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       ),
       style: const TextStyle(color: Colors.white),
     );
@@ -247,16 +258,18 @@ class _HomeScreenState extends State<HomeScreen> {
           value: value,
           isExpanded: true,
           icon: Icon(Icons.arrow_drop_down, color: Colors.grey.shade700),
-          items: items.map((item) => DropdownMenuItem(
-            value: item,
-            child: Text(
-              item,
-              style: TextStyle(
-                color: Colors.grey.shade800,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          )).toList(),
+          items: items
+              .map((item) => DropdownMenuItem(
+                    value: item,
+                    child: Text(
+                      item,
+                      style: TextStyle(
+                        color: Colors.grey.shade800,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ))
+              .toList(),
           onChanged: onChanged,
         ),
       ),
@@ -273,7 +286,8 @@ class _HomeScreenState extends State<HomeScreen> {
               margin: const EdgeInsets.only(bottom: 12),
               child: InfractionCard(
                 infraction: _filteredInfractions[index],
-                onTap: () => _showInfractionDetails(_filteredInfractions[index]),
+                onTap: () =>
+                    _showInfractionDetails(_filteredInfractions[index]),
               ),
             ),
           );
@@ -302,7 +316,8 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  PreferredSizeWidget _buildAppBar(BuildContext context, User? user, String? userName) {
+  PreferredSizeWidget _buildAppBar(
+      BuildContext context, User? user, String? userName) {
     return AppBar(
       flexibleSpace: Container(
         decoration: const BoxDecoration(
@@ -487,7 +502,8 @@ class _HomeScreenState extends State<HomeScreen> {
           heroTag: 'interactive_map',
           onPressed: () => Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const InteractiveMapScreen()),
+            MaterialPageRoute(
+                builder: (context) => const InteractiveMapScreen()),
           ),
           backgroundColor: Colors.blue[700],
           child: const Icon(Icons.public, color: Colors.white),
@@ -515,7 +531,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               const SizedBox(height: 12),
-              Text('class_label'.tr(args: [infraction.classe ?? 'unspecified'.tr()])),
+              Text('class_label'
+                  .tr(args: [infraction.classe ?? 'unspecified'.tr()])),
               const SizedBox(height: 8),
               Text('article_label'.tr(args: [infraction.texte])),
               if (infraction.amende.isNotEmpty) ...[
@@ -524,7 +541,8 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
               if (infraction.vehicleTypes?.isNotEmpty ?? false) ...[
                 const SizedBox(height: 8),
-                Text('affected_vehicles_label'.tr(args: [infraction.vehicleTypes!.join(', ')])),
+                Text('affected_vehicles_label'
+                    .tr(args: [infraction.vehicleTypes!.join(', ')])),
               ],
             ],
           ),
@@ -539,6 +557,28 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  void _openPrivacyPolicy() async {
+    final url = Uri.parse('privacy_policy_url'.tr());
+    try {
+      final canLaunch = await canLaunchUrl(url);
+      if (canLaunch) {
+        await launchUrl(url, mode: LaunchMode.externalApplication);
+      } else {
+        throw Exception('Impossible d\'ouvrir l\'URL');
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+                'Erreur lors de l\'ouverture de la politique de confidentialité'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
   void _showAboutScreen() {
     showDialog(
       context: context,
@@ -548,11 +588,13 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.verified_user, size: 64, color: Colors.redAccent),
+              const Icon(Icons.verified_user,
+                  size: 64, color: Colors.redAccent),
               const SizedBox(height: 16),
               Text(
                 'Infractions Routières Mali',
-                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                style:
+                    const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 16),
@@ -565,7 +607,8 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(height: 16),
               Text(
                 'developed_by'.tr(),
-                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                style:
+                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
               ),
               const SizedBox(height: 8),
               const CircleAvatar(
@@ -576,7 +619,8 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(height: 8),
               Text(
                 'Yacouba Santara',
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                style:
+                    const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               Text(
                 'flutter_developer'.tr(),
@@ -587,7 +631,8 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(height: 16),
               Text(
                 'support_project'.tr(),
-                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                style:
+                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
               ),
               const SizedBox(height: 8),
               Text(
@@ -601,14 +646,45 @@ class _HomeScreenState extends State<HomeScreen> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.orange,
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-                  textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+                  textStyle: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.bold),
                   shape: const StadiumBorder(),
                 ),
                 onPressed: () {
                   Navigator.of(context).pop();
                   _showOrangeMoneyDonation();
                 },
+              ),
+              const SizedBox(height: 24),
+              const Divider(),
+              const SizedBox(height: 16),
+              Text(
+                'privacy_policy'.tr(),
+                style:
+                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'privacy_policy_description'.tr(),
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton.icon(
+                icon: const Icon(Icons.privacy_tip_outlined),
+                label: Text('view_privacy_policy'.tr()),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  foregroundColor: Colors.white,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+                  textStyle: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.bold),
+                  shape: const StadiumBorder(),
+                ),
+                onPressed: () => _openPrivacyPolicy(),
               ),
               const SizedBox(height: 24),
               Text(

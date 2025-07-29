@@ -159,8 +159,8 @@ class _InteractiveMapScreenState extends State<InteractiveMapScreen> {
           FlutterMap(
   mapController: _mapController,
   options: MapOptions(
-    center: _center,
-    zoom: 12.0,
+    initialCenter: _center,
+    initialZoom: 12.0,
     onTap: (tapPosition, latlng) {
       setState(() => _center = latlng);
     },
@@ -240,7 +240,7 @@ class _InteractiveMapScreenState extends State<InteractiveMapScreen> {
         children: [
           FloatingActionButton(
             heroTag: 'recenter',
-            onPressed: () => _mapController.move(_center, _mapController.zoom),
+            onPressed: () => _mapController.move(_center, _mapController.camera.zoom),
             tooltip: 'recenter'.tr(),
             child: const Icon(Icons.my_location),
           ),

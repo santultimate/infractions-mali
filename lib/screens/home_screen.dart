@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'dart:io';
 import 'package:infractions_mali/services/alert_service.dart';
 import '../models/infraction.dart';
 import '../services/infraction_service.dart';

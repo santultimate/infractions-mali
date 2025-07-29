@@ -74,10 +74,30 @@ Une application mobile Flutter moderne pour la sécurité routière au Mali, per
 
 ## 🚀 Installation
 
+### Configuration GitHub
+1. **Créer un nouveau repository** sur GitHub :
+   - Allez sur [GitHub](https://github.com)
+   - Cliquez sur "New repository"
+   - Nom : `infractions-mali`
+   - Description : `Application de sécurité routière pour le Mali`
+   - Public ou Private selon votre préférence
+   - **Ne pas** initialiser avec README, .gitignore ou licence
+
+2. **Connecter le repository local** :
+   ```bash
+   git remote add origin https://github.com/yacouba-santara/infractions-mali.git
+   git branch -M main
+   git push -u origin main
+   ```
+
+3. **Vérifier le lien de la politique de confidentialité** :
+   - Le lien dans l'application pointe vers : `https://github.com/yacouba-santara/infractions-mali/blob/main/PRIVACY_POLICY.md`
+   - Assurez-vous que votre nom d'utilisateur GitHub est `yacouba-santara` ou modifiez le lien dans `assets/lang/fr.json` et `assets/lang/en.json`
+
 ### 1. Cloner le projet
 ```bash
-git clone https://github.com/votre-username/infractions_mali.git
-cd infractions_mali
+git clone https://github.com/yacouba-santara/infractions-mali.git
+cd infractions-mali
 ```
 
 ### 2. Installer les dépendances
